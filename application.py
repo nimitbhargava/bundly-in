@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from sqlalchemy import create_engine
 from database_setup import Base, User, Bundle, Links
 from sqlalchemy.orm import sessionmaker
@@ -16,8 +16,8 @@ session = DBSession()
 
 # Home Page
 @app.route('/')
-def show_info():
-    return "Welcome to Bundly.in"
+def home():
+    return render_template('home.html')
 
 
 # Login
