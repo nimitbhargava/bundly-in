@@ -1,7 +1,12 @@
 from flask import Flask
+from sqlalchemy import create_engine
+from database_setup import Base, User, Bundle, Links
 
 app = Flask(__name__)
 
+# Connect to database bundly.db
+engine = create_engine('sqlite:///bundly.db')
+Base.metadata.bind = engine
 
 # Home Page
 @app.route('/')
