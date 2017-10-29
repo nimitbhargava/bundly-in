@@ -1,12 +1,18 @@
 from flask import Flask
 from sqlalchemy import create_engine
 from database_setup import Base, User, Bundle, Links
+from sqlalchemy.orm import sessionmaker
 
 app = Flask(__name__)
 
 # Connect to database bundly.db
 engine = create_engine('sqlite:///bundly.db')
 Base.metadata.bind = engine
+
+# Create database session
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
+
 
 # Home Page
 @app.route('/')
