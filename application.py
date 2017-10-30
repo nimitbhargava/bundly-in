@@ -17,17 +17,18 @@ session = DBSession()
 # Home Page
 @app.route('/')
 def home():
-    return render_template('home.html')
+    bundles = session.query(Bundle).all()
+    return render_template('home.html', bundles=bundles)
 
 
 # View Bundle
 @app.route('/<int:bundle_id>')
 def show_bundle(bundle_id):
-    bundle = session.query(Bundle).filter(Bundle.id==bundle_id).first()
+    bundle = session.query(Bundle).filter(Bundle.id == bundle_id).first()
     if bundle is None:
         return render_template('home.html')
-    links = session.query(Links).filter(Links.bundle_id==bundle_id).all()
-    return render_template('show_bundle.html', links = links, bundle = bundle)
+    links = session.query(Links).filter(Links.bundle_id == bundle_id).all()
+    return render_template('show_bundle.html', links=links, bundle=bundle)
 
 
 # Login
