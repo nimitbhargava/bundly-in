@@ -1,0 +1,11 @@
+{% extends "default_template.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-content">
+            <span class="card-title">{{ bundle.title }}</span>
+            {% for link in links %}
+                <a href="{{ link.url }}">{{ link.url }}</a><br>
+            {% endfor %}
+    </div>
+</div>
+{% endblock %}
