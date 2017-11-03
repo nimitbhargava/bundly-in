@@ -28,5 +28,18 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <!-- Compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.secondary-content').click(function () {
+            var li = $(this).closest('li');
+            var bundle_id = $(li).data('bundle-id');
+            var link_id = $(li).attr('id');
+            var url = "/" + bundle_id + "/delete";
+            $.post(url, {link_id: link_id}, function (data) {
+                window.location = data;
+            })
+        });
+    });
+</script>
 </body>
 </html>

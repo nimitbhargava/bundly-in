@@ -9,11 +9,15 @@
                     <input type="submit" value="Add">
                 </div>
             </form>
-            <div class="collection">
+            <ul class="collection">
                 {% for link in links %}
-                    <a class="collection-item" href="{{ link.url }}">{{ link.url }}</a>
+                    <li id="{{ link.id }}" data-bundle-id="{{ bundle.id }}" class="collection-item">
+                        <a href="{{ link.url }}" target="_blank">{{ link.url }}</a>
+                        <a href="#!" class="secondary-content"><i class="material-icons">clear</i></a>
+                        <a href="#!" class="secondary-content"><i class="material-icons">mode_edit</i></a>
+                    </li>
                 {% endfor %}
-            </div>
+            </ul>
         </div>
     </div>
 {% endblock %}

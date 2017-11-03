@@ -41,6 +41,18 @@ def add_link(bundle_id):
     return redirect(url_for('show_bundle', bundle_id=bundle_id))
 
 
+# Remove Link
+@app.route('/<int:bundle_id>/delete', methods=['POST'])
+def remove_link(bundle_id):
+    link_id = request.form['link_id']
+    link = session.query(Links).filter_by(id=link_id).first()
+    if link is None:
+        return "Incorrect request"
+    session.delete(link)
+    session.commit()
+    return url_for('show_bundle', bundle_id=bundle_id)
+
+
 # Login
 @app.route('/login')
 def login():
