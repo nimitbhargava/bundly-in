@@ -3,6 +3,12 @@
     <div class="card">
         <div class="card-content">
             <span class="card-title">{{ bundle.title }}</span>
+            <form action="add-link/{{ bundle.id }}" method="post">
+                <div class="input-field">
+                    <input type="url" name="input-add-url" placeholder="Enter URL.." required>
+                    <input type="submit" value="Add">
+                </div>
+            </form>
             <div class="collection">
                 {% for link in links %}
                     <a class="collection-item" href="{{ link.url }}">{{ link.url }}</a>

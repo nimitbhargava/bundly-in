@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import create_engine
 from database_setup import Base, User, Bundle, Links
 from sqlalchemy.orm import sessionmaker
@@ -29,6 +29,16 @@ def show_bundle(bundle_id):
         return render_template('home.html')
     links = session.query(Links).filter(Links.bundle_id == bundle_id).all()
     return render_template('show_bundle.html', links=links, bundle=bundle)
+
+
+# Operations on Links
+# Add Link
+@app.route('/add-link/<int:bundle_id>', methods=['POST'])
+def add_link(bundle_id):
+    new_url = Links(url=request.form["input-add-url"], bundle_id=bundle_id)
+    session.add(new_url)
+    session.commit()
+    return redirect(url_for('show_bundle', bundle_id=bundle_id))
 
 
 # Login
