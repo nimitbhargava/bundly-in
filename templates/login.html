@@ -1,0 +1,20 @@
+{% extends "default_template.html" %}
+{% block content %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="//apis.google.com/js/platform.js?onload=start"></script>
+    <div class="card row">
+        <div id="signInButton">
+            <span class="g-signin"
+                  data-scope="openid email"
+                  data-clientid="263474196729-uo6j6a8bjhduvnr8rfq56tjrlqn88flv.apps.googleusercontent.com"
+                  data-redirecturi="postmessage"
+                  data-accesstype="offline"
+                  data-cookiepolicy="single_host_origin"
+                  data-callback="signInCallback"
+                  data-approvalprompt="force">
+          </span>
+        </div>
+        <div id="result"></div>
+    </div>
+
+{% endblock %}

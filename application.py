@@ -56,7 +56,7 @@ def remove_link(bundle_id):
 # Login
 @app.route('/login')
 def login():
-    return "Login Page"
+    return render_template('login.html')
 
 
 # Logout
