@@ -29,7 +29,7 @@ nimit = User(name="Nimit Bhargava", email="nimitbhargava@gmail.com")
 session.add(nimit)
 session.commit()
 
-bundle1 = Bundle(title="Top Movies", creator=1)
+bundle1 = Bundle(title="Top Movies", creator="nimitbhargava@gmail.com")
 session.add(bundle1)
 session.commit()
 
@@ -42,7 +42,7 @@ gwtdt = Links(url="http://www.imdb.com/title/tt0108052/", bundle_id=1)
 session.add(gwtdt)
 session.commit()
 
-bundle2 = Bundle(title="Top Self Driving car tutorial", creator=1)
+bundle2 = Bundle(title="Top Self Driving car tutorial", creator="nimitbhargava@gmail.com")
 session.add(bundle2)
 session.commit()
 
