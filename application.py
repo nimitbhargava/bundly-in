@@ -36,7 +36,10 @@ def show_bundle(bundle_id):
     if bundle is None:
         return render_template('home.html')
     links = session.query(Links).filter(Links.bundle_id == bundle_id).all()
-    return render_template('show_bundle.html', links=links, bundle=bundle)
+    creator = session.query(User).filter_by(id=bundle.id).first().email
+    is_creator = session.query(User).filter_by(
+        email=login_session['email']).first().email == creator if 'email' in login_session else ''
+    return render_template('show_bundle.html', is_creator=is_creator, links=links, bundle=bundle)
 
 
 # Operations on Links
@@ -45,6 +48,12 @@ def show_bundle(bundle_id):
 def add_link(bundle_id):
     if 'username' not in login_session:
         return redirect('/login')
+    bundle = session.query(Bundle).filter(Bundle.id == bundle_id).first()
+    creator = session.query(User).filter_by(id=bundle.id).first().email
+    is_creator = session.query(User).filter_by(
+        email=login_session['email']).first().email == creator if 'email' in login_session else False
+    if not is_creator:
+        return "You don't seem to be the owner"
     new_url = Links(url=request.form["input-add-url"], bundle_id=bundle_id)
     session.add(new_url)
     session.commit()
