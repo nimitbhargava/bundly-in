@@ -15,7 +15,11 @@
         <div class="nav-wrapper blue lighten-1">
             <a href="/" class="brand-logo center">Bundly</a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="#">Login</a></li>
+                {% if 'username' not in session %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('gdisconnect') }}">Logout</a></li>
+                {% endif %}
             </ul>
         </div>
     </nav>
