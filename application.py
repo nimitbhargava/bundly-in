@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session as login_session
 from sqlalchemy import create_engine
 from database_setup import Base, User, Bundle, Links
 from sqlalchemy.orm import sessionmaker
-
+import json
+import string, random
 app = Flask(__name__)
+
+CLIENT_ID = json.loads(open('client_secret.json', 'r').read())['web']['client_id']
 
 # Connect to database bundly.db
 engine = create_engine('sqlite:///bundly.db')
@@ -56,7 +59,11 @@ def remove_link(bundle_id):
 # Login
 @app.route('/login')
 def login():
-    return render_template('login.html')
+    # Create anti-forgery state token to prevent request forgery
+    # Store it in the session for later validation
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+    login_session['state'] = state
+    return render_template('login.html', STATE=state, client_id=CLIENT_ID)
 
 
 # Logout
@@ -78,5 +85,6 @@ def gdisconnect():
 
 
 if __name__ == '__main__':
+    app.secret_key = 'ultra_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=8000)
