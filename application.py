@@ -43,6 +43,8 @@ def show_bundle(bundle_id):
 # Add Link
 @app.route('/add-link/<int:bundle_id>', methods=['POST'])
 def add_link(bundle_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     new_url = Links(url=request.form["input-add-url"], bundle_id=bundle_id)
     session.add(new_url)
     session.commit()
