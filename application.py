@@ -11,54 +11,62 @@ import requests
 
 app = Flask(__name__)
 
+# Constants
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+DATABASE_URL = 'sqlite:///bundly.db'
 
 # Connect to database bundly.db
-engine = create_engine('sqlite:///bundly.db')
+engine = create_engine(DATABASE_URL)
 Base.metadata.bind = engine
 
 # Create database session
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+# Helper Functions
 
-# Home Page
+def generate_state():
+    return ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
+
+def is_creator(bundle):
+    creator = session.query(Bundle).filter_by(id=bundle.id).first().creator
+    return login_session['email'] == creator if 'email' in login_session else False
+
+def get_bundle(bundle_id):
+    return session.query(Bundle).filter(Bundle.id == bundle_id).first()
+
+def get_links(bundle_id):
+    return session.query(Links).filter(Links.bundle_id == bundle_id).all()
+
+# Routes
+
 @app.route('/')
 def home():
     bundles = session.query(Bundle).all()
     return render_template('home.html', bundles=bundles)
 
-
-# View Bundle
 @app.route('/<int:bundle_id>')
 def show_bundle(bundle_id):
-    bundle = session.query(Bundle).filter(Bundle.id == bundle_id).first()
+    bundle = get_bundle(bundle_id)
     if bundle is None:
         return render_template('home.html')
-    links = session.query(Links).filter(Links.bundle_id == bundle_id).all()
-    creator = session.query(Bundle).filter_by(id=bundle.id).first().creator
-    is_creator = login_session['email'] == creator if 'email' in login_session else False
-    return render_template('show_bundle.html', is_creator=is_creator, links=links, bundle=bundle)
+    links = get_links(bundle_id)
+    is_owner = is_creator(bundle)
+    return render_template('show_bundle.html', is_creator=is_owner, links=links, bundle=bundle)
 
-
-# Operations on Links
-# Add Link
 @app.route('/add-link/<int:bundle_id>', methods=['POST'])
 def add_link(bundle_id):
     if 'username' not in login_session:
         return redirect('/login')
-    bundle = session.query(Bundle).filter(Bundle.id == bundle_id).first()
-    creator = session.query(Bundle).filter_by(id=bundle.id).first().creator
-    is_creator = login_session['email'] == creator if 'email' in login_session else False
-    if not is_creator:
+    bundle = get_bundle(bundle_id)
+    is_owner = is_creator(bundle)
+    if not is_owner:
         return "You don't seem to be the owner"
     new_url = Links(url=request.form["input-add-url"], bundle_id=bundle_id)
     session.add(new_url)
     session.commit()
     return redirect(url_for('show_bundle', bundle_id=bundle_id))
 
-
-# Remove Link
 @app.route('/<int:bundle_id>/delete', methods=['POST'])
 def remove_link(bundle_id):
     link_id = request.form['link_id']
@@ -68,8 +76,6 @@ def remove_link(bundle_id):
     session.delete(link)
     session.commit()
     return url_for('show_bundle', bundle_id=bundle_id)
-
-
 # Login
 @app.route('/login')
 def login():
@@ -206,8 +212,10 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-
 if __name__ == '__main__':
     app.secret_key = 'ultra_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=8000)
+
+
+
